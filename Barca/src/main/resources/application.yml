@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      max-request-size: 200MB
+      routes:
+        - id: user-cana
+          uri: ${CANA_URI:http://localhost:8081}
+          predicates:
+            - Path=/user/**, /profile/**
+        - id: anzol-service
+          uri: ${ANZOL_URI:http://localhost:8082}
+          predicates:
+            - Path=/capture/**, /alert/**, /images/**
+        - id: minhoca-service
+          uri: ${MINHOCA_URI:http://localhost:8083}
+          predicates:
+            - Path=/latest-captures, /statistics/**
+  codec:
+    max-in-memory-size: 200MB
+
+logging:
+  level:
+    org.springframework.cloud.gateway: ${LOGGING:INFO}
+    org.springframework: ${LOGGING:INFO}
+    gal.marevita: ${LOGGING:INFO}

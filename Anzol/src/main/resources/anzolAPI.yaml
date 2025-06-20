@@ -1,0 +1,660 @@
+openapi: 3.0.3
+info:
+  title: Anzol API
+  version: '1.0.0'
+  description: API.
+
+servers:
+  - url: http://localhost:8082
+    description: Servidor local de desarrollo
+  - url: http://localhost:8080
+    description: Gateaway local de desarrollo
+
+paths:
+  /capture/fish:
+    get:
+      summary: Lista dos peixes que se poden rexistrar na aplicación.
+      operationId: getFishes
+      tags:
+        - Basic Info
+      responses:
+        '200':
+          description: Lista de peixes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+  /capture/bait:
+    get:
+      summary: Lista dos cebos que se poden rexistrar na aplicación.
+      operationId: getBaits
+      tags:
+        - Basic Info
+      responses:
+        '200':
+          description: Lista de cebos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+
+  /capture/new:
+    post:
+      summary: Subir unha nova captura
+      operationId: newCapture
+      tags:
+        - Xestión capturas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Capture'
+      responses:
+        '200':
+          description: Captura subida exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capture'
+        '400':
+          description: Solicitude inválida
+
+  /capture:
+    get:
+      summary: Lista das capturas do usuario.
+      operationId: getCaptures
+      tags:
+        - Recuperación capturas
+      responses:
+        '200':
+          description: Lista de capturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaptureInfo'
+
+  /capture/friends:
+    get:
+      summary: Lista das capturas dos amigos do usuario.
+      operationId: getFriendCaptures
+      tags:
+        - Recuperación capturas
+      responses:
+        '200':
+          description: Lista de capturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaptureInfo'
+
+  /capture/{captureId}:
+    get:
+      summary: Devolver unha captura polo seu ID.
+      operationId: getFullCapture
+      tags:
+        - Recuperación capturas
+      parameters:
+        - name: captureId
+          in: path
+          required: true
+          description: ID da captura que se quere recuperar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Captura.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capture'
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Captura non atopada.
+        '400':
+          description: Solicitude inválida.
+    delete:
+      summary: Eliminar unha captura polo seu ID.
+      operationId: deleteCapture
+      tags:
+        - Xestión capturas
+      parameters:
+        - name: captureId
+          in: path
+          required: true
+          description: ID da captura que se quere eliminar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Captura eliminada exitosamente.
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Captura non atopada.
+        '400':
+          description: Solicitude inválida.
+
+  /capture/{captureId}/like:
+    put:
+      summary: Engadir ou quitar like dunha captura.
+      operationId: toggleLike
+      tags:
+        - Social
+      parameters:
+        - name: captureId
+          in: path
+          required: true
+          description: ID da captura onde se realizará a acción de like/unlike.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación realizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capture'
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Captura non atopada.
+        '400':
+          description: Solicitude inválida.
+          
+          
+
+  /capture/user/{userName}:
+    get:
+      summary: Recuperar unha lista de CaptureInfo dun usuario polo seu nome de usuario.
+      operationId: getUserCaptures
+      tags:
+        - Recuperación capturas
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario do que se queren recuperar as capturas.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de CaptureInfo do usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaptureInfo'
+        '404':
+          description: Usuario non atopado.
+        '400':
+          description: Solicitude inválida.
+  
+  /alert/new:
+    post:
+      summary: Crear unha nova alerta
+      operationId: newAlert
+      tags:
+        - Xestión alertas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+      responses:
+        '200':
+          description: Alerta creada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '400':
+          description: Solicitude inválida.
+
+
+  /alert:
+    get:
+      summary: Recuperar as alertas do usuario.
+      operationId: getAlerts
+      tags:
+        - Recuperación alertas
+      responses:
+        '200':
+          description: Lista das alertas do usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+        '403':
+          description: Non autorizado.
+
+  /alert/{alertId}:
+    get:
+      summary: Recuperar unha alerta polo seu ID.
+      operationId: getAlert
+      tags:
+        - Recuperación alertas
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          description: ID da alerta que se desexa recuperar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alerta recuperada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Alerta non atopada.
+        '400':
+          description: Solicitude inválida.
+    put:
+      summary: Actualizar unha alerta polo seu ID.
+      operationId: updateAlert
+      tags:
+        - Xestión alertas
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          description: ID da alerta que se quere actualizar.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+      responses:
+        '200':
+          description: Alerta actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+        '400':
+          description: Solicitude inválida.
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Alerta non atopada.
+
+    delete:
+      summary: Eliminar unha alerta polo seu ID.
+      operationId: deleteAlert
+      tags:
+        - Xestión alertas
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          description: ID da alerta que se quere eliminar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alerta eliminada exitosamente.
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Alerta non atopada.
+
+
+  /alert/check:
+    get:
+      summary: Consultar se algunha alerta se activa e devolve a lista de períodos nos que a activaron.
+      operationId: checkAlerts
+      tags:
+        - Chequeo alertas
+      responses:
+        '200':
+          description: Lista de períodos nos que algunha alerta se activa.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Period'
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Non hai alertas activas.
+
+
+  /alert/{alertId}/check:
+    get:
+      summary: Verificar se a alerta específica está activada e devolve os períodos.
+      operationId: checkAlert
+      tags:
+        - Chequeo alertas
+      parameters:
+        - name: alertId
+          in: path
+          required: true
+          description: ID da alerta que se desexa verificar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de períodos nos que a alerta especificada está activada.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Period'
+        '403':
+          description: Non autorizado.
+        '404':
+          description: Alerta non atopada ou non activada.
+        '400':
+          description: Solicitude inválida.
+
+
+
+
+  /images/new:
+    post:
+      summary: Subir unha nova imaxe.
+      operationId: newImage
+      tags:
+        - Xestión imaxes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Imaxe gardada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O identificador único da imaxe gardada.
+        '400':
+          description: Solicitude inválida.
+        '403':
+          description: Non autorizado.
+        '500':
+          description: Erro interno.
+
+  /images/{userName}/{imgId}:
+    get:
+      summary: Recuperar unha imaxe específica usando usuario e ID da imaxe.
+      operationId: getImage
+      tags:
+        - Xestión imaxes
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome do usuario propietario da imaxe.
+          schema:
+            type: string
+        - name: imgId
+          in: path
+          required: true
+          description: ID da imaxe que se desexa recuperar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Imaxe recuperada.
+        '404':
+          description: Imaxe non atopada.
+        '403':
+          description: Non autorizado.
+        '500':
+          description: Erro interno.
+
+components:
+  schemas:
+    List:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            type: string
+
+    Capture:
+      type: object
+      required:
+        - security
+        - dateTime
+        - gpsLocation
+        - baits
+        - fish
+      properties:
+        id:
+          type: string
+        owner:
+          type: string
+          example: SuperTruper
+        security:
+          type: integer
+          example: 1
+        likes:
+          type: array
+          items:
+            type: string
+            example: Antón
+        dateTime:
+          type: string
+          example: 2025-06-11T20:48:15.123+02:00[Europe/Madrid]
+        gpsLocation:
+          $ref: '#/components/schemas/GPSLocation'
+        location:
+          type: string
+          example: Praia de Carnota, Galicia
+        imageCaption:
+          type: string
+          example: Great catch on the coast of the Cíes Islands
+        images:
+          type: array
+          items:
+            type: string
+        baits:
+          type: array
+          items:
+            type: string
+            example: miñoca
+        fish:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fish'
+        weatherConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+
+    CaptureInfo:
+      type: object
+      required:
+        - owner
+        - likes
+        - dateTime
+        - location
+        - fish
+      properties:
+        id:
+          type: string
+        owner:
+          type: string
+          example: SuperTruper
+        security:
+          type: integer
+          example: 1
+        likes:
+          type: array
+          items:
+            type: string
+            example: antón
+        dateTime:
+          type: string
+          example: 2025-06-11T20:48:15.123+02:00[Europe/Madrid]
+        location:
+          type: string
+          example: Praia de Carnota, Galicia
+        imageCaption:
+          type: string
+          example: Great catch on the coast of the Cíes Islands
+        images:
+          type: array
+          items:
+            type: string
+        baits:
+          type: array
+          items:
+            type: string
+            example: miñoca
+        fish:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fish'
+
+
+
+    Alert:
+      type: object
+      required:
+        - name
+        - gpsLocation
+        - baits
+        - fish
+        - weatherConditions
+      properties:
+        id:
+          type: string
+          description: O identificador único do obxecto Alert.
+        name:
+          type: string
+          description: Nome da alerta.
+        owner:
+          type: string
+          description: Propietario da alerta.
+        relatedCapture:
+          type: string
+          description: ID da captura relacionada coa alerta.
+        gpsLocation:
+          $ref: '#/components/schemas/GPSLocation'
+        location:
+          type: string
+          description: Localización indicada na alerta.
+        baits:
+          type: array
+          items:
+            type: string
+          description: Lista de cebos asociados á alerta.
+        fish:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fish'
+          description: Lista de peixes asociados á alerta.
+        weatherConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+          description: Lista de condicións meteorolóxicas asociadas á alerta.
+        activated:
+          type: array
+          items:
+            $ref: '#/components/schemas/Period'
+
+
+    GPSLocation:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: float
+          example: 42.8782
+        longitude:
+          type: number
+          format: float
+          example: -8.5448
+
+    Fish:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Lubina
+        quantity:
+          type: integer
+          example: 3
+
+    WeatherCondition:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          example: Vento
+        value:
+          type: number
+          format: float
+          example: 15.3
+        error:
+          type: number
+          format: float
+          example: 15.3
+          
+    
+    Period:
+      type: object
+      required:
+        - alert
+        - startDate
+        - endDate
+      properties:
+        alert:
+          $ref: '#/components/schemas/Alert'
+        startDate:
+          type: string
+          example: 2025-06-11T20:48:15.123+02:00[Europe/Madrid]
+        endDate:
+          type: string
+          example: 2025-06-11T20:48:15.123+02:00[Europe/Madrid]
+
+    PeriodList:
+      type: object
+      required:
+        - periods
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Period'

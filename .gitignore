@@ -1,0 +1,17 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Docker
+.env
+*.tar
+
+# Volúmenes/Datos persistentes
+mongo-data/
+data/
+volumes/
+
+# Archivos del sistema
+.DS_Store
+
+/imaxes

@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Minhoca API
+  version: '1.0.0'
+  description: API.
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+paths:
+  /latest-captures:
+    get:
+      summary: Recupera as últimas capturas
+      operationId: latestCaptures
+      tags:
+        - Capturas en tempo real
+      responses:
+        '200':
+          description: As últimas capturas do sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LatestCapture'
+        '500':
+          description: Server error.
+          
+        
+
+  /statistics/{userName}:
+    get:
+      summary: Recupera as estatísticas de un usuario
+      operationId: getStatistics
+      tags:
+        - Estatísticas
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome do usuario cuxas estatísticas deben ser recuperadas.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estatísticas do usuario recuperadas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+        '404':
+          description: Usuario non atopado.
+        '500':
+          description: Erro do servidor.
+
+components:
+  schemas:
+    Statistics:
+      type: object
+      properties:
+        totalLocations:
+          type: integer
+          description: Total de lugares visitados.
+        totalCaptures:
+          type: integer
+          description: Total de capturas realizadas.
+        totalFishCount:
+          type: integer
+          description: Total de peixes capturados.
+        biggerCapture:
+          $ref: '#/components/schemas/CaptureInfo'
+        diverseCapture:
+          $ref: '#/components/schemas/CaptureInfo'
+        likedCapture:
+          $ref: '#/components/schemas/CaptureInfo'
+        locations:
+          type: array
+          description: Lista de lugares visitados co número de visitas e peixes capturados.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Nome do lugar.
+              times:
+                type: integer
+                description: Cantidade de veces que o lugar foi visitado.
+              fishes:
+                type: array
+                description: Cantidades de peixes capturados no lugar.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Nome do peixe.
+                    number:
+                      type: integer
+                      description: Cantidade capturada.
+        baits:
+          type: array
+          description: Lista de cebos e os peixes capturados asociados.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Tipo de cebo utilizado.
+              times:
+                type: integer
+                description: Cantidade de veces que o cebo foi usado.
+              fishes:
+                type: array
+                description: Cantidade de peixes capturados por cebo.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Nome do peixe.
+                    number:
+                      type: integer
+                      description: Cantidade capturada.
+        fishes:
+          type: array
+          description: Lista de peixes coas cantidades totais capturadas.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Nome do peixe.
+              number:
+                type: integer
+                description: Cantidade total capturada do peixe.
+
+    CaptureInfo:
+      type: object
+      required:
+        -id
+        -dateTime
+      properties:
+        id:
+          type: string
+          description: ID da captura.
+        dateTime:
+          type: string
+          description: Data da captura.
+
+    LatestCapture:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID da captura.
+        owner:
+          type: string
+          description: Pescador que fixo a captura.
+        security:
+          type: integer
+          description: Privacidade da captura.
+        gpsLocation:
+          type: object
+          description: GPS.
+          properties:
+            latitude:
+              type: number
+              format: double
+              description: Latitude.
+            longitude:
+              type: number
+              format: double
+              description: Lonxitude.
+        dateTime:
+          type: string
+          description: Momento da captura.
+

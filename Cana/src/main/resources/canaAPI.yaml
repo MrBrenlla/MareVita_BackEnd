@@ -1,0 +1,428 @@
+openapi: 3.0.3
+info:
+  title: Cana API
+  version: '1.0.0'
+  description: API básica con un endpoint POST.
+
+servers:
+  - url: http://localhost:8081
+    description: Servidor local de desenvolvemento
+
+paths:
+  /user/register:
+    post:
+      summary: Crear un novo usuario
+      operationId: register
+      tags:
+        - Xestión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        '400':
+          description: Solicitude inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '409':
+          description: Conflito co nome de usuario ou email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error409'
+  /user/login:
+    post:
+      summary: Inicia sesión dun usuario
+      operationId: logIn
+      tags:
+        - Xestión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogIn'
+      responses:
+        '200':
+          description: Inicio de sesión correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogIn'
+        '401':
+          description: Credenciais incorrectos
+        '404':
+          description: Usuario non atopado
+  /user/update:
+    put:
+      summary: Editar datos do usuario usuario
+      operationId: updateUser
+      tags:
+        - Xestión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserData'
+      responses:
+        '200':
+          description: Usuario editado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        '400':
+          description: Solicitude inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '404':
+          description: Usuario non atopado
+        '409':
+          description: Conflito co nome de usuario ou email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error409'
+  /user/update/password:
+    put:
+      summary: Editar a contrasinal do usuario usuario
+      operationId: updatePassword
+      tags:
+        - Xestión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassChange'
+      responses:
+        '200':
+          description: Contrasinal editada exitosamente
+        '401':
+          description: Credenciais incorrectos
+  /profile/pic:
+    put:
+      summary: Editar a imaxe de perfil do usuario
+      operationId: updateProfilePic
+      tags:
+        - Xestión de usuario
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo de imaxe para subir
+      responses:
+        '200':
+          description: Imaxe subida exitosamente
+
+
+  /user/{userName}:
+    get:
+      summary: Devolve os datos básicos do usuario
+      operationId: getUser
+      tags:
+        - UserInfo
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario único polo que se identifica o usuario
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos do usuario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserData'
+        '404':
+          description: Usuario non atopado
+  /profile/pic/{userName}:
+    get:
+      summary: Obter imaxe de perfil dun usuario
+      operationId: getProfilePic
+      tags:
+        - UserInfo
+      parameters:
+        - name: userName
+          in: path
+          description:
+            Nome do usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Imaxe recuperada exitosamente
+        '404':
+          description: Imaxe non atopada
+        '400':
+          description: Parámetro inválido
+
+  /user/social:
+    get:
+      summary: Devolve os amigos e solicitudes do usuario
+      operationId: getSocial
+      tags:
+        - Social
+      responses:
+        '200':
+          description: Datos do usuario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Usuario non atopado
+  /user/{userName}/add:
+    put:
+      summary: Envia unha solicitude de amistade ao usuario
+      operationId: sendFriendPetition
+      tags:
+        - Social
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario ao que se lle quere enviar a solicitude
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Solicitude enviada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Usuario non atopado
+  /user/{userName}/accept:
+    put:
+      summary: Aceptar unha solicitude de amistade ao usuario
+      operationId: AcceptFriendPetition
+      tags:
+        - Social
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario ao que se lle quere aceptar a solicitude
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Solicitude aceptada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Usuario non atopado
+  /user/{userName}/decline:
+    put:
+      summary: Rexeitar unha solicitude de amistade ao usuario
+      operationId: DeclineFriendPetition
+      tags:
+        - Social
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario ao que se lle quere rexeitar a solicitude
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Solicitude aceptada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Usuario non atopado
+  /user/{userName}/remove:
+    put:
+      summary: Eliminar unha amistade
+      operationId: RemoveFriend
+      tags:
+        - Social
+      parameters:
+        - name: userName
+          in: path
+          required: true
+          description: Nome de usuario ao que se quere eliminar como amigo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Solicitude aceptada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Social'
+        '404':
+          description: Usuario non atopado
+
+  /user/search/{keyWord}:
+    get:
+      summary: Busca os usuarios que coincidac coa busca
+      operationId: searchUser
+      tags:
+        - Busca
+      parameters:
+        - name: keyWord
+          in: path
+          required: true
+          description: Cadea a  buscar nos nomes de usuario
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Solicitude aceptada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+        '404':
+          description: Usuario non atopado
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - userName
+        - name
+        - email
+        - password
+      properties:
+        userName:
+          type: string
+          example: SuperTruper
+        name:
+          type: string
+          example: Juan Pérez
+        email:
+          type: string
+          format: email
+          example: juan.perez@cana.com
+        password:
+          type: string
+          example: Abcd123.
+    UserData:
+      type: object
+      required:
+        - userName
+        - name
+        - email
+      properties:
+        userName:
+          type: string
+          example: SuperTruper
+        name:
+          type: string
+          example: Juan Pérez
+        email:
+          type: string
+          format: email
+          example: juan.perez@cana.com
+        friendsCount:
+          type: integer
+          example: 0
+    LogIn:
+      type: object
+      required:
+        - userNameOrEmail
+        - password
+      properties:
+        userNameOrEmail:
+          type: string
+          example: SuperTruper
+        password:
+          type: string
+          example: Abcd123.
+    Error400:
+      type: object
+      required:
+        - badValue
+      properties:
+        badValue:
+          type: string
+          example: Username
+    Error409:
+      type: object
+      required:
+        - conflict
+      properties:
+        conflict:
+          type: string
+          example: Username
+    Token:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR...
+    PassChange:
+      type: object
+      required:
+        - oldPass
+        - newPass
+      properties:
+        oldPass:
+          type: string
+          example: Abcd123.
+        newPass:
+          type: string
+          example: Abc1234.
+    Social:
+      type: object
+      required:
+        - friends
+        - friendPetitionsReceived
+        - friendPetitionsSent
+      properties:
+        friends:
+          type: array
+          items:
+            type: string
+        friendPetitionsReceived:
+          type: array
+          items:
+            type: string
+        friendPetitionsSent:
+          type: array
+          items:
+            type: string
+    SearchResult:
+      type: object
+      required:
+        - userList
+      properties:
+        userList:
+          type: array
+          items:
+            type: string
+

@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27027:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - 'MONGO_INITDB_DATABASE=MareVitaDataBase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+
+  cana:
+    image: cana:latest
+    container_name: cana
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://root:secret@mongodb:27017/MareVitaDataBase?authSource=admin
+      - PORT=8080
+      - IMAGES_PATH=/images/profilePics
+      - LOGGING=INFO
+    volumes:
+      - ./imaxes:/images
+
+
+  anzol:
+    image: anzol:latest
+    container_name: anzol
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://root:secret@mongodb:27017/MareVitaDataBase?authSource=admin
+      - PORT=8080
+      - IMAGES_PATH=/images/captures
+      - LOGGING=INFO
+    volumes:
+      - ./imaxes:/images
+
+  minhoca:
+    image: minhoca:latest
+    container_name: minhoca
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://root:secret@mongodb:27017/MareVitaDataBase?authSource=admin
+      - PORT=8080
+      - LOGGING=INFO
+
+
+  barca:
+    image: barca:latest
+    container_name: barca
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cana
+    environment:
+      - CANA_URI=http://cana:8080
+      - ANZOL_URI=http://anzol:8080
+      - MINHOCA_URI=http://minhoca:8080
+      - PORT=8080
+      - LOGGING=INFO
+
+volumes:
+  mongo-data:
+
