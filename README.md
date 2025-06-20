@@ -48,7 +48,7 @@ A continuación, preséntanse os pasos detallados:
 2. Compilar a libraría compartida `commons`:
 
    ```bash
-   cd ../commons
+   cd ./commons
    mvn clean package -DskipTests
    ```
 
