@@ -1,7 +1,16 @@
 
 # Guía de Execución do BackEnd de MareVita
 
-Este documento proporciona as instrucións necesarias para compilar e executar os servizos que compoñen o BackEnd do proxecto **MareVita**. O sistema está baseado en microservizos desenvolvidos en Java con Spring Boot e require ferramentas específicas para a súa construción e execución.
+Este repositorio forma parte do Traballo de Fin de Máster (TFM) no Máster Universitario en Enxeñaría Informática da Universidade da Coruña (UDC).
+
+Contén o backend de MareVita, unha aplicación orientada á pesca deportiva en Galicia. A arquitectura estrutúrase en microservizos desenvolvidos en Java con Spring Boot, organizados segundo principios de modularidade e separación de responsabilidades.
+
+Inclúe:
+- Microservizos independentes para xestión de usuarios, capturas e alertas e últimas capturas e estatísticas.
+- Un módulo `commons` compartido entre servizos con definicións comúns das clases gardadas en MongoDB.
+- Un `gateway` baseado en Spring Cloud Gateway, encargado do enrutado e da seguridade (JWT).
+
+O sistema está deseñado para despregue mediante Docker, facilitando escalabilidade e mantemento. O backend serve como núcleo funcional da app MareVita e está adaptado ao contexto galego da pesca deportiva.
 
 >FrontEnd dispoñible en [MareVita_FrontEnd](https://github.com/MrBrenlla/MareVita_FrontEnd.git)
 
