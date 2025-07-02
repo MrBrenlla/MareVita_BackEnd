@@ -57,7 +57,7 @@ A continuación, preséntanse os pasos detallados:
 2. Compilar a libraría compartida `commons`:
 
    ```bash
-   cd ./commons
+   cd ./Commons
    mvn clean package -DskipTests
    ```
 
@@ -66,14 +66,14 @@ A continuación, preséntanse os pasos detallados:
 3. Compilar o microservizo `barca`:
 
    ```bash
-   cd ../barca
+   cd ../Barca
    mvn clean package -DskipTests
    ```
 
 4. Compilar o microservizo `cana`:
 
    ```bash
-   cd ../cana
+   cd ../Cana
    mvn clean package -DskipTests
    ```
 
@@ -81,14 +81,14 @@ A continuación, preséntanse os pasos detallados:
 5. Compilar o microservizo `anzol`:
 
    ```bash
-   cd ../anzol
+   cd ../Anzol
    mvn clean package -DskipTests
    ```
 
 6. Compilar o microservizo `minhoca`:
 
    ```bash
-   cd ../minhoca
+   cd ../Minhoca
    mvn clean package -DskipTests
    ```
 
@@ -99,10 +99,10 @@ A continuación, preséntanse os pasos detallados:
 Unha vez compilados os servizos, cómpre construír as imaxes de contedor correspondentes a cada un deles empregando `docker build`:
 
 ```bash
-docker build -t barca ../barca
-docker build -t cana ../cana
-docker build -t anzol ../anzol
-docker build -t minhoca ../minhoca
+docker build -t barca ../Barca
+docker build -t cana ../Cana
+docker build -t anzol ../Anzol
+docker build -t minhoca ../Minhoca
 ```
 
 Estes comandos crearán catro imaxes etiquetadas como `barca`, `cana`, `anzol` e `minhoca` respectivamente.
